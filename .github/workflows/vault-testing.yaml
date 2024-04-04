@@ -18,12 +18,12 @@ jobs:
           url: ${{ secrets.VAULT_ADDR }}
           namespace: gha-jwt-testing
           path: jwt-gha
-          role: gha-${{ env.ENV_CODE }}-secret-crud
+          role: gha-${{ vars.ENV_CODE }}-secret-crud
           secrets: |
-            gha-jwt-testing/data/${{ env.ENV_CODE }}/secret-aaa value | SECRET_AAA ;
-            gha-jwt-testing/data/${{ env.ENV_CODE }}/secret-bbb value | SECRET_BBB ;
-            gha-jwt-testing/data/${{ env.ENV_CODE }}/secret-ccc value | SECRET_CCC ;
-            gha-jwt-testing/data/${{ env.ENV_CODE }}/secret-ddd value | SECRET_DDD
+            gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-aaa value | SECRET_AAA ;
+            gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-bbb value | SECRET_BBB ;
+            gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ccc value | SECRET_CCC ;
+            gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ddd value | SECRET_DDD
       - name: Use secret from Vault
         run: |
           # This step has access to the secret retrieved above; see hashicorp/vault-action for more details.
@@ -45,23 +45,23 @@ jobs:
           url: ${{ secrets.VAULT_ADDR }}
           namespace: gha-jwt-testing
           path: jwt-gha
-          role: gha-${{ env.ENV_CODE }}-secret-crud
+          role: gha-${{ vars.ENV_CODE }}-secret-crud
           exportToken: true
       - name: Use token from Vault
         run: |
           # This step has access to the token retrieved above
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/gha-jwt-testing/gha-jwt-testing/data/${{ env.ENV_CODE }}/secret-aaa
+               {{ secrets.VAULT_ADDR }}/v1/gha-jwt-testing/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-aaa
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/gha-jwt-testing/gha-jwt-testing/data/${{ env.ENV_CODE }}/secret-bbb
+               {{ secrets.VAULT_ADDR }}/v1/gha-jwt-testing/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-bbb
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/gha-jwt-testing/gha-jwt-testing/data/${{ env.ENV_CODE }}/secret-ccc
+               {{ secrets.VAULT_ADDR }}/v1/gha-jwt-testing/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ccc
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/gha-jwt-testing/gha-jwt-testing/data/${{ env.ENV_CODE }}/secret-ddd
+               {{ secrets.VAULT_ADDR }}/v1/gha-jwt-testing/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ddd
   fetch-token-use-token-put:
     runs-on: ubuntu-latest
     permissions:

@@ -148,6 +148,7 @@ jobs:
           role: gha-stg-secret-crud
           exportToken: true
   exit-gracefully:
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Use token from Vault

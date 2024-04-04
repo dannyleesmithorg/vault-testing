@@ -150,6 +150,7 @@ jobs:
   exit-gracefully:
     if: ${{ always() }}
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: Use token from Vault
         run: |

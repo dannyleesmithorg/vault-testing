@@ -15,7 +15,7 @@ jobs:
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
-          url: {{ secrets.VAULT_ADDR }}
+          url: ${{ secrets.VAULT_ADDR }}
           namespace: gha-jwt-testing
           path: jwt-gha
           role: gha-{{ env.ENV_CODE }}-secret-crud
@@ -42,7 +42,7 @@ jobs:
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
-          url: {{ secrets.VAULT_ADDR }}
+          url: ${{ secrets.VAULT_ADDR }}
           namespace: gha-jwt-testing
           path: jwt-gha
           role: gha-{{ env.ENV_CODE }}-secret-crud
@@ -73,7 +73,7 @@ jobs:
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
-          url: {{ secrets.VAULT_ADDR }}
+          url: ${{ secrets.VAULT_ADDR }}
           namespace: gha-jwt-testing
           path: jwt-gha
           role: gha-repo-claim
@@ -104,7 +104,7 @@ jobs:
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
-          url: {{ secrets.VAULT_ADDR }}
+          url: ${{ secrets.VAULT_ADDR }}
           namespace: gha-jwt-testing
           path: jwt-gha
           role: gha-stg-secret-crud
@@ -125,7 +125,7 @@ jobs:
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
-          url: {{ secrets.VAULT_ADDR }}
+          url: ${{ secrets.VAULT_ADDR }}
           namespace: gha-jwt-testing
           path: jwt-gha
           role: gha-false-repo
@@ -142,7 +142,7 @@ jobs:
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
-          url: {{ secrets.VAULT_ADDR }}
+          url: ${{ secrets.VAULT_ADDR }}
           namespace: gha-jwt-testing
           path: jwt-gha
           role: gha-stg-secret-crud

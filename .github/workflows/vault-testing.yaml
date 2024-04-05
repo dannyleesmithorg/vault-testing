@@ -52,16 +52,16 @@ jobs:
           # This step has access to the token retrieved above
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-aaa
+               ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-aaa
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-bbb
+               ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-bbb
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ccc
+               ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ccc
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ddd
+               ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ddd
   fetch-token-use-token-put:
     runs-on: ubuntu-latest
     permissions:
@@ -107,7 +107,7 @@ jobs:
           url: ${{ secrets.VAULT_ADDR }}
           namespace: ${{ vars.NAMESPACE }}
           path: jwt-gha
-          role: gha-stg-secret-crud
+          role: gha-${{ vars.ENV_CODE }}-secret-crud
           secrets: |
             gha-jwt-testing/data/stg/secret-aaa value | SECRET_AAA ;
             gha-jwt-testing/data/stg/secret-bbb value | SECRET_BBB ;

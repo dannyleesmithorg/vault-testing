@@ -109,6 +109,7 @@ jobs:
     environment: dev
     steps:
       - name: Retrieve token from Vault
+        continue-on-error: true
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
@@ -130,6 +131,7 @@ jobs:
     environment: dev
     steps:
       - name: Retrieve token from Vault
+        continue-on-error: true
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
@@ -147,6 +149,7 @@ jobs:
     environment: dev
     steps:
       - name: Retrieve token from Vault
+        continue-on-error: true
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt

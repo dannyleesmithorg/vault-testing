@@ -1,5 +1,8 @@
 on: workflow_dispatch
 
+env:
+  HCP: true
+
 permissions:
   id-token: write
 
@@ -8,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     env:
-      namespace: ${{ endsWith( ${{ secrets.VAULT_ADDR }}, "hashicorp.cloud:8200" ) && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
+      namespace: ${{ env.HCP && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
     permissions:
       id-token: write
       contents: read
@@ -40,7 +43,7 @@ jobs:
       contents: read
     environment: dev
     env:
-      namespace: ${{ endsWith( ${{ secrets.VAULT_ADDR }}, "hashicorp.cloud:8200" ) && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
+      namespace: ${{ env.HCP && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
@@ -73,7 +76,7 @@ jobs:
       contents: read
     environment: dev
     env:
-      namespace: ${{ endsWith( ${{ secrets.VAULT_ADDR }}, "hashicorp.cloud:8200" ) && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
+      namespace: ${{ env.HCP && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
@@ -106,7 +109,7 @@ jobs:
       contents: read
     environment: dev
     env:
-      namespace: ${{ endsWith( ${{ secrets.VAULT_ADDR }}, "hashicorp.cloud:8200" ) && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
+      namespace: ${{ env.HCP && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
@@ -129,7 +132,7 @@ jobs:
       contents: read
     environment: dev
     env:
-      namespace: ${{ endsWith( ${{ secrets.VAULT_ADDR }}, "hashicorp.cloud:8200" ) && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
+      namespace: ${{ env.HCP && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
@@ -148,7 +151,7 @@ jobs:
       contents: read
     environment: dev
     env:
-      namespace: ${{ endsWith( ${{ secrets.VAULT_ADDR }}, "hashicorp.cloud:8200" ) && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
+      namespace: ${{ env.HCP && "admin/gha-jwt-testing" || "gha-jwt-testing" }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0

@@ -4,6 +4,14 @@ permissions:
   id-token: write
 
 jobs:
+  jwt-dump:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: View GitHub JWT
+        uses: magic7s/expose-jwt-action@v0.1.1 
   fetch-token-and-secrets:
     runs-on: ubuntu-latest
     environment: dev

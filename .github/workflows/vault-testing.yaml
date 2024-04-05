@@ -1,8 +1,5 @@
 on: workflow_dispatch
 
-env:
-  HCP: true
-
 permissions:
   id-token: write
 
@@ -10,8 +7,6 @@ jobs:
   fetch-token-and-secrets:
     runs-on: ubuntu-latest
     environment: dev
-    env:
-      namespace: ${{ env.HCP && 'admin/gha-jwt-testing' || 'gha-jwt-testing' }}
     permissions:
       id-token: write
       contents: read
@@ -21,7 +16,7 @@ jobs:
         with:
           method: jwt
           url: ${{ secrets.VAULT_ADDR }}
-          namespace: ${{ env.namespace }}
+          namespace: ${{ vars.NAMESPACE }}
           path: jwt-gha
           role: gha-${{ vars.ENV_CODE }}-secret-crud
           secrets: |
@@ -42,15 +37,13 @@ jobs:
       id-token: write
       contents: read
     environment: dev
-    env:
-      namespace: ${{ env.HCP && 'admin/gha-jwt-testing' || 'gha-jwt-testing' }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
           url: ${{ secrets.VAULT_ADDR }}
-          namespace: ${{ env.namespace }}
+          namespace: ${{ vars.NAMESPACE }}
           path: jwt-gha
           role: gha-${{ vars.ENV_CODE }}-secret-crud
           exportToken: true
@@ -59,31 +52,29 @@ jobs:
           # This step has access to the token retrieved above
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/${{ env.namespace }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-aaa
+               {{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-aaa
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/${{ env.namespace }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-bbb
+               {{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-bbb
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/${{ env.namespace }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ccc
+               {{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ccc
           curl --header "X-Vault-Token: $VAULT_TOKEN" \
                --request GET \
-               {{ secrets.VAULT_ADDR }}/v1/${{ env.namespace }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ddd
+               {{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ddd
   fetch-token-use-token-put:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
     environment: dev
-    env:
-      namespace: ${{ env.HCP && 'admin/gha-jwt-testing' || 'gha-jwt-testing' }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
           url: ${{ secrets.VAULT_ADDR }}
-          namespace: gha-jwt-testing
+          namespace: ${{ vars.NAMESPACE }}
           path: jwt-gha
           role: gha-repo-claim
           exportToken: true
@@ -93,7 +84,7 @@ jobs:
           curl \
               -H "X-Vault-Token: $VAULT_TOKEN" \
               --request POST \
-              $VAULT_ADDR/v1/${{ env.namespace }}/kv/data/test \
+              $VAULT_ADDR/v1/kv/data/test \
               --data @<(cat <<EOT
           {
               "data": {
@@ -108,15 +99,13 @@ jobs:
       id-token: write
       contents: read
     environment: dev
-    env:
-      namespace: ${{ env.HCP && 'admin/gha-jwt-testing' || 'gha-jwt-testing' }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
           url: ${{ secrets.VAULT_ADDR }}
-          namespace: ${{ env.namespace }}
+          namespace: ${{ vars.NAMESPACE }}
           path: jwt-gha
           role: gha-stg-secret-crud
           secrets: |
@@ -131,15 +120,13 @@ jobs:
       id-token: write
       contents: read
     environment: dev
-    env:
-      namespace: ${{ env.HCP && 'admin/gha-jwt-testing' || 'gha-jwt-testing' }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
           url: ${{ secrets.VAULT_ADDR }}
-          namespace: ${{ env.namespace }}
+          namespace: ${{ vars.NAMESPACE }}
           path: jwt-gha
           role: gha-false-repo
           exportToken: true
@@ -150,15 +137,13 @@ jobs:
       id-token: write
       contents: read
     environment: dev
-    env:
-      namespace: ${{ env.HCP && 'admin/gha-jwt-testing' || 'gha-jwt-testing' }}
     steps:
       - name: Retrieve token from Vault
         uses: hashicorp/vault-action@v2.8.0
         with:
           method: jwt
           url: ${{ secrets.VAULT_ADDR }}
-          namespace: ${{ env.namespace }}
+          namespace: ${{ vars.NAMESPACE }}
           path: jwt-gha
           role: gha-stg-secret-crud
           exportToken: true

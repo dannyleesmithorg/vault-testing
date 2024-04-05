@@ -4,14 +4,6 @@ permissions:
   id-token: write
 
 jobs:
-  jwt-dump:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - name: View GitHub JWT
-        uses: magic7s/expose-jwt-action@v0.1.1 
   fetch-token-and-secrets:
     runs-on: ubuntu-latest
     environment: dev
@@ -123,7 +115,6 @@ jobs:
             gha-jwt-testing/data/stg/secret-ccc value | SECRET_CCC ;
             gha-jwt-testing/data/stg/secret-ddd value | SECRET_DDD
   role-with-different-repo-claim:
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -141,7 +132,6 @@ jobs:
           role: gha-false-repo
           exportToken: true
   role-with-bad-env:
-    if: ${{ always() }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -158,11 +148,4 @@ jobs:
           path: jwt-gha
           role: gha-stg-secret-crud
           exportToken: true
-  exit-gracefully:
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    environment: dev
-    steps:
-      - name: Use token from Vault
-        run: |
-          exit 0
+

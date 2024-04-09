@@ -1,0 +1,150 @@
+on: workflow_dispatch
+
+permissions:
+  id-token: write
+
+jobs:
+  fetch-token-and-secrets:
+    runs-on: ubuntu-latest
+    environment: stg
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Retrieve secret from Vault
+        uses: hashicorp/vault-action@v2.8.0
+        with:
+          method: jwt
+          url: ${{ secrets.VAULT_ADDR }}
+          namespace: ${{ vars.NAMESPACE }}
+          path: jwt-gha
+          role: gha-${{ vars.ENV_CODE }}-secret-crud
+          secrets: |
+            gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-aaa value | SECRET_AAA ;
+            gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-bbb value | SECRET_BBB ;
+            gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ccc value | SECRET_CCC ;
+            gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ddd value | SECRET_DDD
+      - name: Use secret from Vault
+        run: |
+          # This step has access to the secret retrieved above; see hashicorp/vault-action for more details.
+          echo AAA: ${{ env.SECRET_AAA }}
+          echo BBB: ${{ env.SECRET_BBB }}
+          echo CCC: ${{ env.SECRET_CCC }}
+          echo DDD: ${{ env.SECRET_DDD }}
+  fetch-token-use-token:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: stg
+    steps:
+      - name: Retrieve token from Vault
+        uses: hashicorp/vault-action@v2.8.0
+        with:
+          method: jwt
+          url: ${{ secrets.VAULT_ADDR }}
+          namespace: ${{ vars.NAMESPACE }}
+          path: jwt-gha
+          role: gha-${{ vars.ENV_CODE }}-secret-crud
+          exportToken: true
+      - name: Use token from Vault
+        run: |
+          # This step has access to the token retrieved above
+          curl --header "X-Vault-Token: $VAULT_TOKEN" \
+               --request GET \
+               ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-aaa
+          curl --header "X-Vault-Token: $VAULT_TOKEN" \
+               --request GET \
+               ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-bbb
+          curl --header "X-Vault-Token: $VAULT_TOKEN" \
+               --request GET \
+               ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ccc
+          curl --header "X-Vault-Token: $VAULT_TOKEN" \
+               --request GET \
+               ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/${{ vars.ENV_CODE }}/secret-ddd
+  fetch-token-use-token-put:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: stg
+    steps:
+      - name: Retrieve token from Vault
+        uses: hashicorp/vault-action@v2.8.0
+        with:
+          method: jwt
+          url: ${{ secrets.VAULT_ADDR }}
+          namespace: ${{ vars.NAMESPACE }}
+          path: jwt-gha
+          role: gha-repo-claim
+          exportToken: true
+      - name: Use token from Vault
+        run: |
+          # This step has access to the token retrieved above
+          curl \
+              -H "X-Vault-Token: $VAULT_TOKEN" \
+              --request POST \
+              ${{ secrets.VAULT_ADDR }}/v1/${{ vars.NAMESPACE }}/gha-jwt-testing/data/test \
+              --data @<(cat <<EOT
+          {
+              "data": {
+                  "mykey": "myvalue"
+              }
+          }
+          EOT
+              )
+  pull-wrong-secrets:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: stg
+    steps:
+      - name: Retrieve token from Vault
+        continue-on-error: true
+        uses: hashicorp/vault-action@v2.8.0
+        with:
+          method: jwt
+          url: ${{ secrets.VAULT_ADDR }}
+          namespace: ${{ vars.NAMESPACE }}
+          path: jwt-gha
+          role: gha-${{ vars.ENV_CODE }}-secret-crud
+          secrets: |
+            gha-jwt-testing/data/prd/secret-aaa value | SECRET_AAA ;
+            gha-jwt-testing/data/prd/secret-bbb value | SECRET_BBB ;
+            gha-jwt-testing/data/prd/secret-ccc value | SECRET_CCC ;
+            gha-jwt-testing/data/prd/secret-ddd value | SECRET_DDD
+  role-with-different-repo-claim:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: stg
+    steps:
+      - name: Retrieve token from Vault
+        continue-on-error: true
+        uses: hashicorp/vault-action@v2.8.0
+        with:
+          method: jwt
+          url: ${{ secrets.VAULT_ADDR }}
+          namespace: ${{ vars.NAMESPACE }}
+          path: jwt-gha
+          role: gha-false-repo
+          exportToken: true
+  role-with-bad-env:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: prd
+    steps:
+      - name: Retrieve token from Vault
+        continue-on-error: true
+        uses: hashicorp/vault-action@v2.8.0
+        with:
+          method: jwt
+          url: ${{ secrets.VAULT_ADDR }}
+          namespace: ${{ vars.NAMESPACE }}
+          path: jwt-gha
+          role: gha-prd-secret-crud
+          exportToken: true

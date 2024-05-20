@@ -12,6 +12,7 @@ jobs:
   message:
     name: ${{ inputs.environment }} - Tier 2 Message
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment}}
 
     steps:
     - name: Send greeting

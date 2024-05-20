@@ -1,0 +1,19 @@
+name: Test Tier 1
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'The environment to use'
+        required: true
+        type: string
+
+jobs:
+  tier2:
+    name: ${{ inputs.environment }} - Call Tier 2 Workflow
+    # permissions:
+    #   id-token: write
+    #   contents: read
+    uses: ./.github/workflows/test_tier1.yml
+    with:
+      environment: ${{ inputs.environment }}
